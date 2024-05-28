@@ -4,7 +4,7 @@ import {
   FavoriteOutlined,
   ShareOutlined,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, useTheme } from "@mui/material";
+import { Box, Divider, IconButton, Typography, TextField, Button, useTheme } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -24,6 +24,7 @@ const PostWidget = ({
   comments,
 }) => {
   const [isComments, setIsComments] = useState(false);
+  const [newComment, setNewComment] = useState("");
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const loggedInUserId = useSelector((state) => state.user._id);
@@ -45,6 +46,22 @@ const PostWidget = ({
     });
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
+  };
+
+  const addComment = async () => {
+    if (newComment.trim() === "") return;
+
+    const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ userId: loggedInUserId, comment: newComment }),
+    });
+    const updatedPost = await response.json();
+    dispatch(setPost({ post: updatedPost }));
+    setNewComment("");
   };
 
   return (
@@ -95,14 +112,34 @@ const PostWidget = ({
       {isComments && (
         <Box mt="0.5rem">
           {comments.map((comment, i) => (
-            <Box key={`${name}-${i}`}>
+            <Box key={`${comment.userId}-${i}`}>
               <Divider />
               <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                {comment}
+                <strong>{comment.firstName} {comment.lastName}:</strong> {comment.comment}
+                <Typography variant="caption" display="block" sx={{ pl: "1rem" }}>
+                  {new Date(comment.timestamp).toLocaleString()}
+                </Typography>
               </Typography>
             </Box>
           ))}
           <Divider />
+          <Box display="flex" alignItems="center" mt="0.5rem">
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Write a comment..."
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={addComment}
+              sx={{ ml: "0.5rem" }}
+            >
+              Post
+            </Button>
+          </Box>
         </Box>
       )}
     </WidgetWrapper>
