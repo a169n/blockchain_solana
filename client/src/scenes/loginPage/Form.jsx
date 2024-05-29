@@ -329,6 +329,8 @@ const Form = () => {
                   cursor: "pointer",
                   color: palette.primary.light,
                 },
+                display: "flex",
+                justifyContent: "center"
               }}>
               {isLogin
                 ? "Don't have an account? Sign Up here."

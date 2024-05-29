@@ -27,6 +27,7 @@ const PostWidget = ({
   const [newComment, setNewComment] = useState("");
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
+  const friends = useSelector((state) => state.user.friends);
   const loggedInUserId = useSelector((state) => state.user._id);
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
@@ -49,6 +50,8 @@ const PostWidget = ({
   };
 
   const addComment = async () => {
+    if(friends.length < 5) return alert("You can't have more than 5 friends");
+
     if (newComment.trim() === "") return;
 
     const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
