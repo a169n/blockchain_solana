@@ -158,7 +158,7 @@ const Form = () => {
   const handleFormSubmit = async (values, onSubmitProps) => {
     console.log("handleFormSubmit called with values:", values);
     console.log("handleFormSubmit called with onSubmitProps:", onSubmitProps);
-
+    
     if (isRegister) {
       await register(values, onSubmitProps);
     } else if (isLogin) {
