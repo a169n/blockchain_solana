@@ -70,7 +70,6 @@ const Form = () => {
     }
 
     try {
-      console.log("Submitting registration form with values:", values);
       const formData = new FormData();
       for (let value in values) {
         formData.append(value, values[value]);
@@ -78,7 +77,6 @@ const Form = () => {
       formData.append("publicKey", walletPublicKey.toString());
       formData.append("picturePath", values.picture.name);
 
-      console.log("Sending request to backend...");
       const savedUserResponse = await fetch(
         "http://localhost:3001/auth/register",
         {
@@ -86,20 +84,16 @@ const Form = () => {
           body: formData,
         }
       );
-      console.log("Received response from backend:", savedUserResponse);
 
       if (savedUserResponse.ok) {
         const savedUser = await savedUserResponse.json();
-        console.log("Received saved user data:", savedUser);
         onSubmitProps.resetForm();
         setPageType("login");
       } else {
         const errorData = await savedUserResponse.json();
-        console.error("Error registering user:", errorData);
-        alert(`An error occurred while registering: ${errorData.message}`);
+        alert(`An error occurred while registering: ${errorData}`);
       }
     } catch (error) {
-      console.error("Error registering user:", error);
       alert("An error occurred while registering. Please try again.");
     }
   };
