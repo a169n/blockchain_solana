@@ -29,8 +29,8 @@ export const createPost = async (req, res) => {
 /* READ */
 export const getFeedPosts = async (req, res) => {
   try {
-    const post = await Post.find();
-    res.status(200).json(post);
+    const posts = await Post.find();
+    res.status(200).json(posts);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -84,11 +84,11 @@ export const addComment = async (req, res) => {
       firstName: user.firstName,
       lastName: user.lastName,
       comment,
-      timestamp: new Date()  
+      timestamp: new Date(),
     };
 
     post.comments.push(newComment);
-    
+
     const updatedPost = await Post.findByIdAndUpdate(
       id,
       { comments: post.comments },
@@ -100,4 +100,3 @@ export const addComment = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
-

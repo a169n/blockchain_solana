@@ -3,29 +3,29 @@ import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setFriends, setSuggestedUsers } from "state";
+import { setSuggestedUsers } from "state";
 
-const FriendListWidget = ({ userId }) => {
+const SuggestedUsersListWidget = ({ userId }) => {
   const dispatch = useDispatch();
-  const { palette } = useTheme();
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends || []);
+  const { palette } = useTheme();
+  const suggestedUsers = useSelector((state) => state.suggestedUsers || []);
 
-  const getFriends = async () => {
+  const getSuggestedUsers = async () => {
     const response = await fetch(
-      `http://localhost:3001/users/${userId}/friends`,
+      `http://localhost:3001/users/${userId}/suggested`,
       {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       }
     );
     const data = await response.json();
-    dispatch(setFriends({ friends: data }));
+    dispatch(setSuggestedUsers({ suggestedUsers: data }));
   };
 
   useEffect(() => {
-    getFriends();
-  }, []);
+    getSuggestedUsers();
+  }, [dispatch]);
 
   return (
     <WidgetWrapper>
@@ -34,16 +34,16 @@ const FriendListWidget = ({ userId }) => {
         variant="h5"
         fontWeight="500"
         sx={{ mb: "1.5rem" }}>
-        Friend List
+        Suggested Users
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
+        {Object.values(suggestedUsers).map((user) => (
           <Friend
-            key={friend._id}
-            friendId={friend._id}
-            name={`${friend.firstName} ${friend.lastName}`}
-            subtitle={friend.occupation}
-            userPicturePath={friend.picturePath}
+            key={user._id}
+            friendId={user._id}
+            name={`${user.firstName} ${user.lastName}`}
+            subtitle={user.occupation}
+            userPicturePath={user.picturePath}
           />
         ))}
       </Box>
@@ -51,4 +51,4 @@ const FriendListWidget = ({ userId }) => {
   );
 };
 
-export default FriendListWidget;
+export default SuggestedUsersListWidget;
