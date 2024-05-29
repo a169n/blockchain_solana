@@ -46,6 +46,18 @@ export const getSuggestedUsers = async (req, res) => {
   }
 };
 
+export const getUserFriendsCount = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id);
+    const friendsCount = user.friends.length;
+    res.status(200).json({ friendsCount });
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+
+
 export const getUserFriends = async (req, res) => {
   try {
     const { id } = req.params;

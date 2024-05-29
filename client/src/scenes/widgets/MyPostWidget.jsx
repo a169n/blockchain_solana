@@ -38,7 +38,7 @@ const MyPostWidget = ({ picturePath }) => {
   const medium = palette.neutral.medium;
 
   const handlePost = async () => {
-     if(friends.length < 5) return alert("You can't have more than 5 friends");
+    if(friends.length < 5) return alert("You can't have more than 5 friends");
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", post);
