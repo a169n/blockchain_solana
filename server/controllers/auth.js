@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
-/* REGISTER USER */
 export const register = async (req, res) => {
   try {
     const {
@@ -21,6 +20,14 @@ export const register = async (req, res) => {
       return res
         .status(400)
         .json({ msg: "Please provide all required fields." });
+    }
+
+    const existingUser = await User.findOne({ publicKey });
+
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ msg: "User with this publicKey already exists." });
     }
 
     const salt = await bcrypt.genSalt();
@@ -67,7 +74,7 @@ export const login = async (req, res) => {
 export const loginWithWallet = async (req, res) => {
   try {
     const { publicKey } = req.body;
-    const user = await User.findOne({publicKey: publicKey});
+    const user = await User.findOne({ publicKey: publicKey });
     if (!user)
       return res
         .status(400)
