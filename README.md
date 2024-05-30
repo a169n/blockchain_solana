@@ -1,5 +1,7 @@
 # LinkedOut
 
+### SE-2206. Aibyn Talgatov, Samat Belentbay, Gani Uapov, Kayirkhan Kairolla
+
 ## Project Description
 
 The Web3Linkedin project aims to develop a decentralized professional networking platform using the Solana blockchain. The platform enables users to create profiles, connect with other professionals, and showcase their skills and experiences. The primary focus is on creating a web3 LinkedIn-like application where users have control over their data, and interactions are facilitated through smart contracts.
@@ -46,3 +48,6 @@ The Web3Linkedin project aims to develop a decentralized professional networking
 - Receive friend requests
 - Write posts (if user has TOPWEB3 NFT)
 - View posts of other users
+
+## License
+![LICENCE](LICENSE)
