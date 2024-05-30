@@ -1,4 +1,15 @@
 import User from "../models/User.js";
+import {
+  initializeKeypair,
+  createNft,
+  uploadMetadata,
+} from "../utils/solanaNft.js";
+import { Connection, clusterApiUrl } from "@solana/web3.js";
+import {
+  Metaplex,
+  keypairIdentity,
+  bundlrStorage,
+} from "@metaplex-foundation/js";
 
 /* READ */
 export const getUser = async (req, res) => {
@@ -57,7 +68,6 @@ export const getUserFriendsCount = async (req, res) => {
   }
 };
 
-
 export const getUserFriends = async (req, res) => {
   try {
     const { id } = req.params;
@@ -93,7 +103,6 @@ export const getUserFriends = async (req, res) => {
   }
 };
 
-/* UPDATE */
 export const addRemoveFriend = async (req, res) => {
   try {
     const { id, friendId } = req.params;
@@ -134,6 +143,36 @@ export const addRemoveFriend = async (req, res) => {
         };
       }
     );
+
+    if (user.friends.length >= 5 && !user.hasTopWeb3Nft) {
+      const connection = new Connection(clusterApiUrl("devnet"));
+      const userKeypair = await initializeKeypair(connection);
+      const metaplex = Metaplex.make(connection)
+        .use(keypairIdentity(userKeypair))
+        .use(
+          bundlrStorage({
+            address: "https://devnet.bundlr.network",
+            providerUrl: "https://api.devnet.solana.com",
+            timeout: 60000,
+          })
+        );
+
+      const nftData = {
+        name: "TOPWEB3",
+        symbol: "TW3",
+        description: "Awarded for having 5 or more friends",
+        sellerFeeBasisPoints: 0,
+        imageFile: "JS.png",
+      };
+
+      const uri = await uploadMetadata(metaplex, nftData);
+      const nft = await createNft(metaplex, uri, nftData);
+
+      user.hasTopWeb3Nft = true;
+      user.metadata_uri = uri;
+      user.nft_address = `https://explorer.solana.com/address/${nft.address.toString()}?cluster=devnet`;
+      await user.save();
+    }
 
     res.status(200).json(formattedFriends);
   } catch (err) {
