@@ -1,8 +1,15 @@
 import { PersonAddOutlined, PersonRemoveOutlined } from "@mui/icons-material";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  IconButton,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setFriends } from "state";
+import { setFriends, setLogin } from "state";
 import FlexBetween from "./FlexBetween";
 import UserImage from "./UserImage";
 
@@ -21,7 +28,22 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
 
   const isFriend = friends.find((friend) => friend._id === friendId);
 
+  const [loading, setLoading] = useState(false);
+
+  const updateUser = async () => {
+    const response = await fetch(`http://localhost:3001/users/${_id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    dispatch(setLogin({ user: data, token: token }));
+  };
+
   const patchFriend = async () => {
+    setLoading(true);
     const response = await fetch(
       `http://localhost:3001/users/${_id}/${friendId}`,
       {
@@ -34,6 +56,8 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
     );
     const data = await response.json();
     dispatch(setFriends({ friends: data }));
+    updateUser();
+    setLoading(false); // Set loading to false when patching friend is done
   };
 
   return (
@@ -65,8 +89,12 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
       {_id !== friendId && (
         <IconButton
           onClick={() => patchFriend()}
-          sx={{ backgroundColor: primaryLight, p: "0.6rem" }}>
-          {isFriend ? (
+          sx={{ backgroundColor: primaryLight, p: "0.6rem" }}
+          disabled={loading} // Disable button when loading
+        >
+          {loading ? ( // Display loading indicator if loading is true
+            <CircularProgress size={24} color="inherit" />
+          ) : isFriend ? (
             <PersonRemoveOutlined sx={{ color: primaryDark }} />
           ) : (
             <PersonAddOutlined sx={{ color: primaryDark }} />

@@ -4,7 +4,15 @@ import {
   FavoriteOutlined,
   ShareOutlined,
 } from "@mui/icons-material";
-import { Box, Divider, IconButton, Typography, TextField, Button, useTheme } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  Typography,
+  TextField,
+  Button,
+  useTheme,
+} from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Friend from "components/Friend";
 import WidgetWrapper from "components/WidgetWrapper";
@@ -28,6 +36,8 @@ const PostWidget = ({
   const dispatch = useDispatch();
   const token = useSelector((state) => state.token);
   const friends = useSelector((state) => state.user.friends);
+  const user = useSelector((state) => state.user);
+
   const loggedInUserId = useSelector((state) => state.user._id);
   const isLiked = Boolean(likes[loggedInUserId]);
   const likeCount = Object.keys(likes).length;
@@ -50,18 +60,21 @@ const PostWidget = ({
   };
 
   const addComment = async () => {
-    if(friends.length < 5) return alert("You can't have more than 5 friends");
+    if (!user.hasTopWeb3Nft) return alert("You need NFT");
 
     if (newComment.trim() === "") return;
 
-    const response = await fetch(`http://localhost:3001/posts/${postId}/comment`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId: loggedInUserId, comment: newComment }),
-    });
+    const response = await fetch(
+      `http://localhost:3001/posts/${postId}/comment`,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: loggedInUserId, comment: newComment }),
+      }
+    );
     const updatedPost = await response.json();
     dispatch(setPost({ post: updatedPost }));
     setNewComment("");
@@ -118,8 +131,14 @@ const PostWidget = ({
             <Box key={`${comment.userId}-${i}`}>
               <Divider />
               <Typography sx={{ color: main, m: "0.5rem 0", pl: "1rem" }}>
-                <strong>{comment.firstName} {comment.lastName}:</strong> {comment.comment}
-                <Typography variant="caption" display="block" sx={{ pl: "1rem" }}>
+                <strong>
+                  {comment.firstName} {comment.lastName}:
+                </strong>{" "}
+                {comment.comment}
+                <Typography
+                  variant="caption"
+                  display="block"
+                  sx={{ pl: "1rem" }}>
                   {new Date(comment.timestamp).toLocaleString()}
                 </Typography>
               </Typography>
@@ -138,8 +157,7 @@ const PostWidget = ({
               variant="contained"
               color="primary"
               onClick={addComment}
-              sx={{ ml: "0.5rem" }}
-            >
+              sx={{ ml: "0.5rem" }}>
               Post
             </Button>
           </Box>

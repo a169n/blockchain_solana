@@ -9,7 +9,8 @@ const FriendListWidget = ({ userId }) => {
   const dispatch = useDispatch();
   const { palette } = useTheme();
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends || []);
+  const user = useSelector((state) => state.user);
+  const friends = useSelector((state) => state.user.friends);
   const [friendsCount, setFriendsCount] = useState(0);
 
   const getFriends = async () => {
@@ -27,7 +28,7 @@ const FriendListWidget = ({ userId }) => {
 
   useEffect(() => {
     getFriends();
-  }, []);
+  }, [friendsCount]);
 
   useEffect(() => {
     setFriendsCount(friends.length);
@@ -43,7 +44,7 @@ const FriendListWidget = ({ userId }) => {
         Friend List: {friendsCount}
       </Typography>
       <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
+        {friends?.map((friend) => (
           <Friend
             key={friend._id}
             friendId={friend._id}

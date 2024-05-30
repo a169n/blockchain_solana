@@ -33,12 +33,14 @@ const MyPostWidget = ({ picturePath }) => {
   const { palette } = useTheme();
   const { _id, friends } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
+  const user = useSelector((state) => state.user);
+
   const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
 
   const handlePost = async () => {
-    if(friends.length < 5) return alert("You can't have more than 5 friends");
+    if (!user.hasTopWeb3Nft) return alert("You need NFT!");
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", post);
@@ -79,13 +81,11 @@ const MyPostWidget = ({ picturePath }) => {
           border={`1px solid ${medium}`}
           borderRadius="5px"
           mt="1rem"
-          p="1rem"
-        >
+          p="1rem">
           <Dropzone
             acceptedFiles=".jpg,.jpeg,.png"
             multiple={false}
-            onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}
-          >
+            onDrop={(acceptedFiles) => setImage(acceptedFiles[0])}>
             {({ getRootProps, getInputProps }) => (
               <FlexBetween>
                 <Box
@@ -93,8 +93,7 @@ const MyPostWidget = ({ picturePath }) => {
                   border={`2px dashed ${palette.primary.main}`}
                   p="1rem"
                   width="100%"
-                  sx={{ "&:hover": { cursor: "pointer" } }}
-                >
+                  sx={{ "&:hover": { cursor: "pointer" } }}>
                   <input {...getInputProps()} />
                   {!image ? (
                     <p>Add Image Here</p>
@@ -108,8 +107,7 @@ const MyPostWidget = ({ picturePath }) => {
                 {image && (
                   <IconButton
                     onClick={() => setImage(null)}
-                    sx={{ width: "15%" }}
-                  >
+                    sx={{ width: "15%" }}>
                     <DeleteOutlined />
                   </IconButton>
                 )}
@@ -126,8 +124,7 @@ const MyPostWidget = ({ picturePath }) => {
           <ImageOutlined sx={{ color: mediumMain }} />
           <Typography
             color={mediumMain}
-            sx={{ "&:hover": { cursor: "pointer", color: medium } }}
-          >
+            sx={{ "&:hover": { cursor: "pointer", color: medium } }}>
             Image
           </Typography>
         </FlexBetween>
@@ -156,14 +153,13 @@ const MyPostWidget = ({ picturePath }) => {
         )}
 
         <Button
-          disabled={!post}
+          disabled={!user.hasTopWeb3Nft}
           onClick={handlePost}
           sx={{
             color: palette.background.alt,
             backgroundColor: palette.primary.main,
             borderRadius: "3rem",
-          }}
-        >
+          }}>
           POST
         </Button>
       </FlexBetween>

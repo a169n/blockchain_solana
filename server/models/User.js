@@ -46,6 +46,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    image_uri: {
+      type: String,
+      default: "",
+    },
     nft_address: {
       type: String,
       default: "",

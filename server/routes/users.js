@@ -13,7 +13,7 @@ const router = express.Router();
 
 /* READ */
 router.get("/all", getAllUsers);
-router.get("/:id", verifyToken, getUser);
+router.get("/:id", getUser);
 router.get("/:id/friends", verifyToken, getUserFriends);
 router.get("/:id/friends/count", verifyToken, getUserFriendsCount);
 router.get("/:id/suggested", verifyToken, getSuggestedUsers);
