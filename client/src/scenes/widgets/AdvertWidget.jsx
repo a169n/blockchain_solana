@@ -26,6 +26,18 @@ const AdvertWidget = () => {
           src={user.image_uri}
           style={{ borderRadius: "0.75rem", margin: "0.75rem 0" }}
         />
+        <FlexBetween>
+          <Typography color={main}>
+            <a href={user.metadata_uri} target="_blank">
+              Metadata link
+            </a>
+          </Typography>
+          <Typography color={medium}>
+            <a href={user.nft_address} target="_blank">
+              View on Solana Explorer
+            </a>
+          </Typography>
+        </FlexBetween>
         <Typography color={medium} m="0.5rem 0">
           Your pathway to stunning and immaculate beauty and made sure your skin
           is exfoliating skin and shining like light.
