@@ -3,6 +3,7 @@ import {
   initializeKeypair,
   createNft,
   uploadMetadata,
+  getImageUri,
 } from "../utils/solanaNft.js";
 import { Connection, clusterApiUrl } from "@solana/web3.js";
 import {
@@ -167,9 +168,11 @@ export const addRemoveFriend = async (req, res) => {
 
       const uri = await uploadMetadata(metaplex, nftData);
       const nft = await createNft(metaplex, uri, nftData);
+      const imageUri = await getImageUri(metaplex, nftData);
 
       user.hasTopWeb3Nft = true;
       user.metadata_uri = uri;
+      user.image_uri = imageUri;
       user.nft_address = `https://explorer.solana.com/address/${nft.address.toString()}?cluster=devnet`;
       await user.save();
     }

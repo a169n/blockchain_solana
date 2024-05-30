@@ -64,10 +64,16 @@ export async function uploadMetadata(metaplex, nftData) {
     image: imageUri,
   });
 
-
-
   console.log("metadata uri:", uri);
   return uri;
+}
+
+export async function getImageUri(metaplex, nftData) {
+  const buffer = fs.readFileSync("public/assets/" + nftData.imageFile);
+  const file = toMetaplexFile(buffer, nftData.imageFile);
+  const imageUri = await metaplex.storage().upload(file);
+
+  return imageUri;
 }
 
 export async function createNft(metaplex, uri, nftData) {
@@ -80,7 +86,6 @@ export async function createNft(metaplex, uri, nftData) {
     },
     { commitment: "finalized" }
   );
-
 
   console.log(
     `Token Mint: https://explorer.solana.com/address/${nft.address.toString()}?cluster=devnet`
