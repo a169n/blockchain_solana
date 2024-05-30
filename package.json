@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@bundlr-network/client": "^0.11.17",
+    "@metaplex-foundation/js": "^0.17.12",
+    "@solana/spl-token": "^0.3.11",
+    "@solana/web3.js": "^1.91.8",
+    "arbundles": "^0.11.1",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^4.9.5"
+  }
+}

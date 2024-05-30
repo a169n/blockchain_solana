@@ -38,6 +38,19 @@ const UserSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
+    hasTopWeb3Nft: {
+      type: Boolean,
+      default: false,
+    },
+    metadata_uri: {
+      type: String,
+      default: "",
+    },
+    nft_address: {
+      type: String,
+      default: "",
+    },
+
     location: String,
     occupation: String,
     viewedProfile: Number,
